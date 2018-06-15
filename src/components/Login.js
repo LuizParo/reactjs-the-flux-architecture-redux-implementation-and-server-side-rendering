@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { browserHistory } from 'react-router';
 
-export const TOKEN_KEY = 'auth-token';
+import { TOKEN_KEY } from '../logicas/LogicaLogin';
 
 export default class Login extends Component {
 

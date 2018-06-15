@@ -4,8 +4,10 @@ import { Router, Route, browserHistory } from 'react-router';
 import { matchPattern } from 'react-router/lib/PatternUtils';
 
 import App from './App';
-import Login, { TOKEN_KEY } from './components/Login';
+import Login from './components/Login';
 import Logout from './components/Logout';
+
+import { TOKEN_KEY } from './logicas/LogicaLogin';
 
 import './css/reset.css';
 import './css/timeline.css';

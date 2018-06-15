@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Link } from 'react-router';
 import PubSub from 'pubsub-js';
 
-import { TOPIC_TIMELINE } from './Timeline';
+import { TOPIC_TIMELINE } from '../logicas/TimelineStore';
 
 export default class Header extends Component {
 
