@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router';
-import PubSub from 'pubsub-js';
 
-import { TOPIC_TIMELINE } from '../logicas/TimelineStore';
+import TimelineApi from '../logicas/TimelineApi';
 
 export default class Header extends Component {
 
@@ -10,15 +9,7 @@ export default class Header extends Component {
         event.preventDefault();
 
         const loginPesquisado = this.inputPesquisa.value;
-        fetch(`http://localhost:8080/api/public/fotos/${loginPesquisado}`)
-            .then(response => {
-                if (response.ok) {
-                    return response.json();
-                }
-
-                throw new Error('Não foi possível pesquisar usuário');
-            })
-            .then(fotos => PubSub.publish(TOPIC_TIMELINE, fotos));
+        this.props.store.dispatch(TimelineApi.carregaFotos(loginPesquisado));
     }
 
     render() {

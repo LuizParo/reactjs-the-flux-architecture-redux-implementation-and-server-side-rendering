@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 
 import FotoItem from './FotoItem';
 
-import { TOKEN_KEY } from '../logicas/LogicaLogin';
+import TimelineApi from '../logicas/TimelineApi';
 
 export default class Timeline extends Component {
 
@@ -18,7 +18,7 @@ export default class Timeline extends Component {
     }
 
     componentWillMount() {
-        this.props.store.subscribe(fotos => this.setState({ fotos }));
+        this.props.store.subscribe(() => this.setState({ fotos : this.props.store.getState() }));
     }
 
     componentDidMount() {
@@ -32,24 +32,15 @@ export default class Timeline extends Component {
     }
 
     carregaFotos(login) {
-        let urlPerfil = 'http://localhost:8080/api';
-        
-        if (!login) {
-            const authToken = localStorage.getItem(TOKEN_KEY);
-            urlPerfil += `/fotos?X-AUTH-TOKEN=${authToken}`;
-        } else {
-            urlPerfil += `/public/fotos/${login}`;
-        }
-    
-        this.props.store.carregaFotos(urlPerfil);
+        this.props.store.dispatch(TimelineApi.carregaFotos(login));
     }
 
     like(fotoId) {
-        this.props.store.like(fotoId);        
+        this.props.store.dispatch(TimelineApi.like(fotoId));
     }
 
     comenta(fotoId, comentario) {
-        this.props.store.comenta(fotoId, comentario);
+        this.props.store.dispatch(TimelineApi.comenta(fotoId, comentario));
     }
 
     render() {
