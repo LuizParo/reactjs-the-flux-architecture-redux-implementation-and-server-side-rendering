@@ -1,55 +1,51 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 
 import FotoItem from './FotoItem';
 
 import TimelineApi from '../logicas/TimelineApi';
 
-export default class Timeline extends Component {
+class Timeline extends Component {
 
     constructor() {
         super();
-
-        this.state = {
-            fotos : []
-        };
-
-        this.like = this.like.bind(this);
-        this.comenta = this.comenta.bind(this);
-    }
-
-    componentWillMount() {
-        this.props.store.subscribe(() => this.setState({ fotos : this.props.store.getState().timeline }));
+        this.login = '';
     }
 
     componentDidMount() {
-        this.carregaFotos(this.props.login);
+        this.props.carregaFotos(this.props.login);
     }
 
     componentWillReceiveProps(nextProps) {
-        if (nextProps.login) {
-            this.carregaFotos(nextProps.login);
+        if (nextProps.login !== this.login) {
+            this.login = nextProps.login;
+            this.props.carregaFotos(nextProps.login);
         }
-    }
-
-    carregaFotos(login) {
-        this.props.store.dispatch(TimelineApi.carregaFotos(login));
-    }
-
-    like(fotoId) {
-        this.props.store.dispatch(TimelineApi.like(fotoId));
-    }
-
-    comenta(fotoId, comentario) {
-        this.props.store.dispatch(TimelineApi.comenta(fotoId, comentario));
     }
 
     render() {
         return (
             <div className="fotos container">
                 {
-                    this.state.fotos.map(foto => <FotoItem foto={foto} key={foto.id} like={this.like} comenta={this.comenta} />)
+                    this.props.fotos.map(foto => <FotoItem foto={foto} key={foto.id} like={this.props.like} comenta={this.props.comenta} />)
                 }
             </div>
         );
     }
 }
+
+function mapStateToProps(state) {
+    return {
+        fotos : state.timeline
+    };
+}
+
+function mapDispatchToProps(dispatch) {
+    return {
+        like : fotoId => dispatch(TimelineApi.like(fotoId)),
+        comenta : (fotoId, comentario) => dispatch(TimelineApi.comenta(fotoId, comentario)),
+        carregaFotos : login => dispatch(TimelineApi.carregaFotos(login))
+    };
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Timeline);
