@@ -1,8 +1,11 @@
 import { TOKEN_KEY } from './LogicaLogin';
 
-export const TYPE_CARREGA_FOTOS = 'CARREGA-FOTOS';
-export const TYPE_COMENTA_FOTO = 'COMENTA-FOTO';
-export const TYPE_LIKE_FOTO = 'LIKE-FOTO';
+import {
+    carrega,
+    comenta,
+    like,
+    notifica
+} from '../actions/actionCreator';
 
 export default class TimelineApi {
 
@@ -10,17 +13,23 @@ export default class TimelineApi {
         return dispatch => {
             let urlPerfil = 'http://localhost:8080/api';
         
-            if (!login) {
+            if (login) {
+                urlPerfil += `/public/fotos/${login}`;
+            } else {
                 const authToken = localStorage.getItem(TOKEN_KEY);
                 urlPerfil += `/fotos?X-AUTH-TOKEN=${authToken}`;
-            } else {
-                urlPerfil += `/public/fotos/${login}`;
             }
 
             fetch(urlPerfil)
                 .then(response => response.json())
                 .then(fotos => {
-                    dispatch({ type : TYPE_CARREGA_FOTOS, fotos });
+                    if (fotos.length === 0) {
+                        dispatch(notifica('Usuário não encontrado'));
+                        return [];
+                    }
+                    
+                    dispatch(notifica(''));
+                    dispatch(carrega(fotos));
                     return fotos;
                 });
         };
@@ -47,11 +56,7 @@ export default class TimelineApi {
                     throw new Error('Não foi possível comentar foto');
                 })
                 .then(novoComentario => {
-                    dispatch({
-                        type : TYPE_COMENTA_FOTO,
-                        fotoId,
-                        novoComentario
-                    });
+                    dispatch(comenta(fotoId, novoComentario));
                     return novoComentario;
                 });
         }
@@ -70,11 +75,7 @@ export default class TimelineApi {
                     throw new Error('Não foi possível dar like na foto');
                 })
                 .then(liker => {
-                    dispatch({
-                        type : TYPE_LIKE_FOTO,
-                        fotoId,
-                        liker
-                    });
+                    dispatch(like(fotoId, liker));
                     return liker;
                 });
         };
