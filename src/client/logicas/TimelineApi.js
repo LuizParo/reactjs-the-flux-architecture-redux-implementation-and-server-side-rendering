@@ -1,3 +1,5 @@
+import 'isomorphic-fetch';
+
 import { TOKEN_KEY } from './LogicaLogin';
 
 import {
@@ -9,18 +11,18 @@ import {
 
 export default class TimelineApi {
 
-    static carregaFotos(login) {
+    static carregaFotos(login, tokenKeyFromServer) {
         return dispatch => {
             let urlPerfil = 'http://localhost:8080/api';
         
             if (login) {
                 urlPerfil += `/public/fotos/${login}`;
             } else {
-                const authToken = localStorage.getItem(TOKEN_KEY);
+                const authToken = (tokenKeyFromServer || localStorage.getItem(TOKEN_KEY));
                 urlPerfil += `/fotos?X-AUTH-TOKEN=${authToken}`;
             }
 
-            fetch(urlPerfil)
+            return fetch(urlPerfil)
                 .then(response => response.json())
                 .then(fotos => {
                     if (fotos.length === 0) {
@@ -47,7 +49,7 @@ export default class TimelineApi {
                 })
             };
     
-            fetch(`http://localhost:8080/api/fotos/${fotoId}/comment?X-AUTH-TOKEN=${authToken}`, requestInfo)
+            return fetch(`http://localhost:8080/api/fotos/${fotoId}/comment?X-AUTH-TOKEN=${authToken}`, requestInfo)
                 .then(response => {
                     if (response.ok) {
                         return response.json();
@@ -66,7 +68,7 @@ export default class TimelineApi {
         return dispatch => {
             const authToken = localStorage.getItem(TOKEN_KEY);
     
-            fetch(`http://localhost:8080/api/fotos/${fotoId}/like?X-AUTH-TOKEN=${authToken}`, { method : 'POST' })
+            return fetch(`http://localhost:8080/api/fotos/${fotoId}/like?X-AUTH-TOKEN=${authToken}`, { method : 'POST' })
                 .then(response => {
                     if (response.ok) {
                         return response.json();

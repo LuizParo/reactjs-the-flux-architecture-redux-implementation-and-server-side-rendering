@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
-import Header from './components/Header';
-import Timeline from './components/Timeline';
+import Header from './Header';
+import Timeline from './Timeline';
 
-class App extends Component {
+class Home extends Component {
     render() {
         return (
             <div id="root">
@@ -17,8 +17,8 @@ class App extends Component {
     }
 }
 
-App.contextTypes = {
+Home.contextTypes = {
     store : PropTypes.object.isRequired
 };
 
-export default App;
+export default Home;

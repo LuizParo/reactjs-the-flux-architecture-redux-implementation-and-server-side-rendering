@@ -39,6 +39,8 @@ export default class Login extends Component {
             })
             .then(token => {
                 localStorage.setItem(TOKEN_KEY, token);
+                document.cookie = `${TOKEN_KEY}=${token}`;
+                
                 browserHistory.push('/timeline');
             })
             .catch(error => this.setState({ mensagem : error.message }));
